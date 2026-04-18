@@ -194,6 +194,7 @@ import './App.css';
 import ProductDetail from './components/ProductDetail';
 import ProductList from './components/ProductList';
 import NotFound from './components/NotFound';
+import Home from './components/Home';
 
 
 function App() {
@@ -261,20 +262,9 @@ if (loadingProducts) {
      <h1>Clase 04 React</h1>
 
      <Routes>
-      <Route path="/" element={
-         <section>
-       <h2>Products</h2>
-
-     
-       
-      <ProductList products= {products} />
-
-
-       
-        <p>Cantidad {products.length}</p>
-
-    </section>
-      } />
+      <Route path="/" 
+          element={<Home products={products} />}
+      />
 
       <Route path="/products/:id" element={<ProductDetail products={products} />} />
 
