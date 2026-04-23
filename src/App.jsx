@@ -188,24 +188,44 @@ function App() {
 /* export default App */
 
 import { useState, useEffect} from 'react'
-import {Routes, Route} from 'react-router-dom'
+import {Routes, Route, Link} from 'react-router-dom'
 import './App.css';
 //import ProductCard from './components/ProductCard';
 import ProductDetail from './components/ProductDetail';
 import ProductList from './components/ProductList';
 import NotFound from './components/NotFound';
 import Home from './components/Home';
-
+import ProductForm from './components/ProductForm';
+import EditProductForm from './components/EditProductForm';
 
 function App() {
 const [products, setProducts] = useState([]);
 const [loadingProducts, setLoadingProducts] = useState(true);
-const [error, setError] = useState('');
-//const [selectedProduct, setSelectedProduct] = useState(null); 
+const [error, setError] = useState(null);
 
 
-const loadProducts = () => {
-  fetch('http://localhost:3000/products')
+
+const loadProducts =  async () => {
+
+
+  try {
+    const response = await fetch('http://localhost:3000/products');
+    if (!response.ok) {
+      throw new Error('Error al cargar los productos');
+    }
+    const data = await response.json();
+    setProducts(data);
+    
+    setError(null);
+  } catch (error) {
+    console.error('Error al cargar los productos:', error);
+      setError(error.message);
+     
+  }
+  finally{
+    setLoadingProducts(false);
+  }
+  /* fetch('http://localhost:3000/products')
     .then(response => {
       if (!response.ok) 
         throw new Error('Error al cargar los productos');
@@ -220,7 +240,7 @@ const loadProducts = () => {
       console.error('Error al cargar los productos:', error);
       setError(error.message);
       setLoadingProducts(false);
-    });
+    }); */
 }
 
 
@@ -229,37 +249,25 @@ useEffect(() => {
   }, [])
 
 if (loadingProducts) {
-  return <h1>Cargando productos...</h1>;
+  return <h1 className='message'>Cargando productos...</h1>;
 }
 
  if (error) {
-  return <p>{error}</p>;
+  return <p className='error'>{error}</p>;
  } 
 
- /* if (selectedProduct) {
-  return (
-  
-  <>
-  
-  { <h2>Detalle del producto</h2> }
 
-  <ProductDetail product={selectedProduct} onBack={setSelectedProduct}
-  />
-
-
-  <h3>{selectedProduct.name}</h3>
-  <p>Precio: ${selectedProduct.price}</p>
-  <p>Stock: {selectedProduct.stock}</p>
-
-
-  
-  </>)
- } */
 
 
   return (
    <main className='container'>
      <h1>Clase 04 React</h1>
+
+     <nav className='main-nav'>
+      <Link to="/" >Home</Link>
+      <Link to="/products/new">Nuevo Producto</Link>
+     
+     </nav>
 
      <Routes>
       <Route path="/" 
@@ -267,6 +275,10 @@ if (loadingProducts) {
       />
 
       <Route path="/products/:id" element={<ProductDetail products={products} />} />
+
+      <Route path="/products/new" element={<ProductForm loadProducts= {loadProducts} />} /> 
+
+      <Route path="/products/:id/edit" element={<EditProductForm products = {products} loadProducts= {loadProducts} />} />
 
       <Route path="*" element={<NotFound />} />
      </Routes>
