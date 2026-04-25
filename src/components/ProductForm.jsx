@@ -32,7 +32,7 @@ function ProductForm({ loadProducts }) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        //setError(false);
+      
          setLoading(true);
       if (!form.name || !form.price || !form.stock) {
         
@@ -97,6 +97,7 @@ function ProductForm({ loadProducts }) {
                 <input 
                 type="number" 
                 id="price" 
+                min="0"
                 name= "price"
                 value={form.price} 
                 onChange={handleChange} />
@@ -107,6 +108,7 @@ function ProductForm({ loadProducts }) {
                 <input 
                 type="number" 
                 id="stock" 
+                min="0"
                 name="stock"
                 value={form.stock} 
                 onChange={handleChange} />

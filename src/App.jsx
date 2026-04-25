@@ -206,14 +206,15 @@ const [error, setError] = useState(null);
 
 
 const loadProducts =  async () => {
-
-
+   
   try {
     const response = await fetch('http://localhost:3000/products');
+
     if (!response.ok) {
       throw new Error('Error al cargar los productos');
     }
     const data = await response.json();
+
     setProducts(data);
     
     setError(null);
@@ -243,6 +244,31 @@ const loadProducts =  async () => {
     }); */
 }
 
+  const handleDelete = async (id) => {
+    const confirmDelete = confirm ('estas seguro que quiere borrar el producto');
+
+    //console.log(confirmDelete);
+
+    if(!confirmDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:3000/products/${id}`, {
+      method: 'DELETE',
+    });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el producto');
+      }
+
+      loadProducts();
+
+    } catch (error) {
+      console.log(error)
+    }
+
+    
+  };
+
 
 useEffect(() => {
     loadProducts()
@@ -270,9 +296,7 @@ if (loadingProducts) {
      </nav>
 
      <Routes>
-      <Route path="/" 
-          element={<Home products={products} />}
-      />
+      <Route path="/"  element={<Home products={products} handleDelete={handleDelete} />} />
 
       <Route path="/products/:id" element={<ProductDetail products={products} />} />
 
