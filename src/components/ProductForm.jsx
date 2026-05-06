@@ -139,15 +139,22 @@ function ProductForm({ loadProducts, products }) {
 
            
             try {
+                const token = localStorage.getItem("token");
                  const response = await fetch (url, {
             method: method,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+
             },
             body: JSON.stringify(productData)
         })
 
-         console.log(response);
+           if(response.status === 401){
+            localStorage.removeItem("token");
+            navigate("/login");
+            return;
+           }
 
             if (!response.ok) {
                 throw new Error(isEditMode ? 'Error al editar el producto' : 'Error al crear el producto');

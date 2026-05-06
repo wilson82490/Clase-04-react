@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { UserPlusIcon } from '@heroicons/react/24/outline';
+import { registerUser } from '../services/AuthServices';
 
 const initialState = {
      email: '',
@@ -70,20 +71,7 @@ function Register(){
         }
 
        try {
-        const response = await fetch("http://localhost:3000/auth/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(user)
-        });
-
-        const data = await response.json();
-        console.log(data);
-
-        if (!response.ok) {
-            throw new Error(data.error || "Error al crear la cuenta");
-        }
+            await registerUser(user);
 
         setError(null);
         setSuccess("Cuenta creada exitosamente");
